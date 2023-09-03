@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body{
+    padding: 0;
+    margin: 0;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+a{
+    color: inherit;
+    text-decoration: none;
+}
+
+*{
+    box-sizing: border-box;
+}
+
+.card{
+    @apply  rounded-lg shadow-md p-4 m-4;
+}
+
+.primary-button{
+    @apply bg-tertiary hover:bg-secondary active:bg-paragraph text-black font-semibold px-4 py-2 rounded-full mt-2
+} 
