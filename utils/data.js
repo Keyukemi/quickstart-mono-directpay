@@ -9,7 +9,7 @@ const data ={
             brand: 'Andrea Iyamah',
             rating: 4.5,
             numReviews: 8,
-            countInStock: 20,
+            countInStock: 5,
             description: 'A popular Two-piece',
             isFeatured: true,
             banner: '/images/andrea_iyamah.jpg',

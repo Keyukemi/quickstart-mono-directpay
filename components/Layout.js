@@ -1,8 +1,14 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import {Store} from "@/utils/Store";
+import { BsCart4 } from 'react-icons/bs';
+
 
 export default function Layout({title, children}) {
+  const { state, dispatch } = useContext(Store);
+  const {cart} = state;
+
   return (
     <>
         <Head>
@@ -14,14 +20,23 @@ export default function Layout({title, children}) {
         <div className='flex min-h-screen flex-col justify-between'>
         <header>
           <nav className='flex h-12 items-center px-4 justify-between shadow-md'>
-              <Link href="/">
-                <p className='text-lg font-bold'>KLOSET</p>
+            <Link href="/">
+              <p className='text-lg font-bold'>KLOSET</p>
+            </Link>
+            <div className="flex items-center space-x-4">
+              <Link href="/login" className='p-1'>Login</Link>
+              <Link href="/cart" className='flex items-center'>
+                <BsCart4 size={24} /> 
+                    <span className='ml-1'> Cart
+                      {cart?.cartItems?.length > 0 && (
+                        <span className='ml-1 rounded-full bg-red-500 px-2 py-1 text-white font-bold text-xs'>
+                          {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
+                        </span>
+                      )}
+                    </span> 
               </Link>
-              <div>
-                <Link href="/cart" className='p-2'>Cart</Link>
-                <Link href="/login" className='p-2'>Login</Link>
-              </div>
-          </nav>  
+            </div>
+          </nav> 
         </header>
 
         <main className='container m-auto mt-4 px-4'>

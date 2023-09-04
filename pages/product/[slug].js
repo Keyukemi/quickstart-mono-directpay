@@ -1,7 +1,8 @@
 import Layout from "@/components/Layout";
 import data from "@/utils/data";
+import {Store} from "@/utils/Store";
 import { useRouter } from "next/router";
-import React from "react";
+import React, {useContext} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BiArrowBack } from 'react-icons/bi';
@@ -9,10 +10,22 @@ import { BiArrowBack } from 'react-icons/bi';
 
 export default function ProductScreen(){
     const {query} = useRouter()
+    const { state, dispatch } = useContext(Store);
     const {slug} = query; 
     const product = data.products.find(x => x.slug === slug)
     if(!product){
         return <div>Product not found</div>
+    }
+
+    const addToCartHandler = () => {
+        const existItem = state.cart.cartItems.find((x) => x.slug === product.slug)
+        const quantity = existItem ? existItem.quantity + 1 : 1;
+        if (product.countInStock < quantity){
+            alert('The Product is Out of Stock')
+            return
+        }
+        dispatch({ type: "CART_ADD_ITEM", payload: {...product, quantity} });
+        console.log("added")
     }
 
     return(
@@ -55,7 +68,7 @@ export default function ProductScreen(){
                             <div>Status</div>
                             <div>{product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}</div>
                         </div>
-                        <button className="primary-button w-full">Add to cart</button>
+                        <button className="primary-button w-full" onClick={addToCartHandler}>Add to cart</button>
                     </div>
                 </div>
             </div>
