@@ -24,3 +24,9 @@ a{
 .primary-button{
     @apply bg-tertiary hover:bg-secondary active:bg-paragraph text-black font-semibold px-4 py-2 rounded-full mt-2
 } 
+
+input,
+select,
+textarea{
+    @apply rounded border p-2 outline-none ring-tertiary focus:ring-secondary
+}

@@ -1,15 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react/jsx-no-comment-textnodes */
-import data from "@/utils/data";
+
 import {Store} from "@/utils/Store";
-import { useRouter } from "next/router";
 import React, {useContext} from "react";
 import Link from "next/link";
 
 export default function ProductItem({ product}) {
-  const {query} = useRouter()
     const { state, dispatch } = useContext(Store);
-    const {slug} = query; 
     if(!product){
         return <div>Product not found</div>
     }

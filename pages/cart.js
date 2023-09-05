@@ -5,8 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { MdCancel } from 'react-icons/md';
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 
-export default function CartScreen(){
+function CartScreen(){
     const router = useRouter();
     const { state, dispatch } = useContext(Store);
     const {cart: {cartItems}} = state;
@@ -89,7 +90,7 @@ export default function CartScreen(){
                                     </div>
                                 </li>
                                 <li>
-                                    <button onClick={() => router.push('/shipping')} 
+                                    <button onClick={() => router.push('login?redirect=/shipping')} 
                                     className="primary-button w-full">Check Out</button>
                                 </li>
                             </ul>
@@ -98,5 +99,8 @@ export default function CartScreen(){
                 )
             }
         </Layout>
-    )
+    );
 }
+
+
+export default dynamic (() => Promise.resolve(CartScreen), {ssr: false})
