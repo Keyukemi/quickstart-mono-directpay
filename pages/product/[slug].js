@@ -9,6 +9,7 @@ import { BiArrowBack } from 'react-icons/bi';
 
 
 export default function ProductScreen(){
+    const router = useRouter()
     const {query} = useRouter()
     const { state, dispatch } = useContext(Store);
     const {slug} = query; 
@@ -25,7 +26,7 @@ export default function ProductScreen(){
             return
         }
         dispatch({ type: "CART_ADD_ITEM", payload: {...product, quantity} });
-        console.log("added")
+        router.push("/cart")
     }
 
     return(
@@ -62,7 +63,7 @@ export default function ProductScreen(){
                     <div className="card p-5 bg-white">
                         <div className="mb-2 flex justify-between ">
                             <div>Price</div>
-                            <div>${product.price}</div>
+                            <div>₦{product.price}</div>
                         </div>
                         <div className="mb-2 flex justify-between ">
                             <div>Status</div>

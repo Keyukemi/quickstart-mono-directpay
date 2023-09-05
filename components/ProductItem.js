@@ -1,9 +1,29 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react/jsx-no-comment-textnodes */
-import React from "react";
+import data from "@/utils/data";
+import {Store} from "@/utils/Store";
+import { useRouter } from "next/router";
+import React, {useContext} from "react";
 import Link from "next/link";
 
-export default function ProductItem({ product }) {
+export default function ProductItem({ product}) {
+  const {query} = useRouter()
+    const { state, dispatch } = useContext(Store);
+    const {slug} = query; 
+    if(!product){
+        return <div>Product not found</div>
+    }
+
+    const addToCartHandler = () => {
+        const existItem = state.cart.cartItems.find((x) => x.slug === product.slug)
+        const quantity = existItem ? existItem.quantity + 1 : 1;
+        if (product.countInStock < quantity){
+            alert('The Product is Out of Stock')
+            return
+        }
+        dispatch({ type: "CART_ADD_ITEM", payload: {...product, quantity} });
+    }
+
   return (
     <div className="card bg-white">
       <Link href={`/product/${product.slug}`}>
@@ -23,8 +43,8 @@ export default function ProductItem({ product }) {
           </h2>
         </Link>
         <p className="text-highlight">{product.brand}</p>
-        <p className="text-highlight font-semibold">${product.price}</p>
-        <button className="primary-button">Add to cart</button>
+        <p className="text-highlight font-semibold">₦{product.price}</p>
+        <button className="primary-button" onClick={addToCartHandler}>Add to cart</button>
       </div>
     </div>
   );
