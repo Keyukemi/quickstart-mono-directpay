@@ -68,7 +68,7 @@ export default function LoginScreen() {
                                 required:'Please enter valid password',
                                 minLength: {value: 4, message: 'Password must be at least 6 characters'}
             
-                            })} className="w-full" id="password" autofocus />
+                            })} className="w-full" id="password" autoFocus />
                         {
                             errors.password && (
                                 <div className="text-red-500">

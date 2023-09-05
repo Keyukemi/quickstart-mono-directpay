@@ -30,3 +30,7 @@ select,
 textarea{
     @apply rounded border p-2 outline-none ring-tertiary focus:ring-secondary
 }
+
+.dropdown-link{
+    @apply flex p-2 hover:bg-tertiary
+}
