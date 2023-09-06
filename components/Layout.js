@@ -50,7 +50,7 @@ export default function Layout({title, children}) {
                 <Menu as="div" className="relative inline-block" >
                   <Menu.Button className="pt-2" >
                     <span className="flex">
-                      <FaRegUserCircle size={24} className='mr-1 text-paragraph'/>
+                      <FaRegUserCircle size={24} className='mr-1 text-highlight'/>
                       {session.user.name}
                     </span>
                   </Menu.Button>

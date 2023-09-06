@@ -34,7 +34,7 @@ export default function ProductScreen(){
             <div className="mb-4">
                 <Link href="/" className="flex item-center gap-4">
                     <BiArrowBack size={24} 
-                    className=" bg-tertiary p-1 hover:bg-secondary active:bg-paragraph text-highlight rounded-full"/> 
+                    className=" bg-tertiary p-1 hover:bg-secondary active:bg-highlight text-paragraph rounded-full"/> 
                     Back to Products
                 </Link>
             </div>

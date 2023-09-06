@@ -2,7 +2,6 @@ import Layout from "@/components/Layout";
 import React, { useContext, useEffect } from "react";
 import {useForm} from 'react-hook-form';
 import CheckoutWizard from "@/components/CheckoutWizard";
-import Link from "next/link";
 import { Store } from "@/utils/Store";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
@@ -121,11 +120,7 @@ export default function ShippingScreen() {
                     }
                 </div>
                 <div className="mb-4 flex justify-between">
-                    <button className="primary-button">
-                        <Link href="/cart">
-                            Back
-                        </Link>
-                    </button>
+                    <button className="secondary-button" type="button" onClick={()=> router.push('/cart')}> Back </button>
                     <button className="primary-button">Next</button>
                 </div>
              </form>

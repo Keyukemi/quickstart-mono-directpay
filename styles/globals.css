@@ -22,8 +22,12 @@ a{
 }
 
 .primary-button{
-    @apply bg-tertiary hover:bg-secondary active:bg-paragraph text-black font-semibold px-4 py-2 rounded-full mt-2
+    @apply bg-tertiary hover:bg-secondary active:bg-highlight text-black font-semibold px-4 py-2 rounded-full mt-2
+}
+.secondary-button{
+    @apply bg-headline hover:bg-primary active:bg-paragraph text-black font-semibold px-4 py-2 rounded-full mt-2
 } 
+
 
 input,
 select,
