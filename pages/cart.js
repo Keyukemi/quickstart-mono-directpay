@@ -6,6 +6,8 @@ import Image from "next/image";
 import { MdCancel } from 'react-icons/md';
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 function CartScreen(){
     const router = useRouter();
@@ -14,9 +16,14 @@ function CartScreen(){
     const removerItemHandler = (item) =>{
         dispatch({ type: "CART_REMOVE_ITEM", payload: item });
     }
-    const updateCartHandler = (item, qty) =>{
+    const updateCartHandler = async (item, qty) =>{
        const quantity = Number(qty);
+       const {data} = await axios.get(`/api/products/${item._id}`)
+       if (data.countInStock < quantity){
+        return toast.error('Sorry,product is out of stock');
+        }
        dispatch({ type: "CART_ADD_ITEM", payload: {...item, quantity} });
+       return toast.success('Item updated in the cart');
     }
 
     return(
@@ -26,7 +33,7 @@ function CartScreen(){
                 cartItems?.length === 0 ? 
                 (<div>
                     Cart is Empty,
-                    <Link href="/" className="text-paragraph"> Go Shopping</Link>
+                    <Link href="/" className="font-bold text-highlight"> Go Shopping!</Link>
                 </div>) :
                 (
                     <div className="grid md:grid-cols-4 md:gap-5">

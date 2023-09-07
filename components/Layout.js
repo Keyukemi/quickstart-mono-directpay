@@ -47,14 +47,14 @@ export default function Layout({title, children}) {
             {status === 'loading' ? (
                 'Loading'
               ) : session?.user ? (
-                <Menu as="div" className="relative inline-block" >
+                <Menu as="div" className="relative inline-block z-10 " >
                   <Menu.Button className="pt-2" >
                     <span className="flex">
                       <FaRegUserCircle size={24} className='mr-1 text-highlight'/>
                       {session.user.name}
                     </span>
                   </Menu.Button>
-                  <Menu.Items className="absolute origin-top-right w-56 bg-white shadow-lg rounded-md border">
+                  <Menu.Items className="absolute origin-top-right right-0 w-56 bg-white shadow-lg rounded-md border">
                     <Menu.Item>
                       <DropdownLink className="dropdown-link" href="/profile">Profile</DropdownLink>
                     </Menu.Item>
