@@ -41,7 +41,7 @@ export default function ShippingScreen() {
         <Layout title="Shipping Address">
              <CheckoutWizard activeStep={1}/>
              <form className="mx-auto max-w-screen-md" onSubmit={handleSubmit(submitHandler)}>
-                <h1 className="mb-4 text-4xl text-center">Shipping Address</h1>
+                <h1 className="mb-4 text-4xl text-center text-primary">Shipping Address</h1>
                 <div className="mb-4">
                     <label htmlFor="fullName">Full Name</label>
                     <input type="text"  id="fullName" className="w-full border-highlight" autoFocus placeholder="Jane Doe"

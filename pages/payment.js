@@ -22,7 +22,7 @@ export default function PaymentScreen() {
         Cookies.set(
             'cart', JSON.stringify({...cart, paymentMethod:selectedPaymentMethod})
         );
-        router.push('/placeholder');  
+        router.push('/confirmorder');  
     };
     useEffect(() =>{
         if(!shippingAddress.address){
@@ -34,7 +34,7 @@ export default function PaymentScreen() {
         <Layout title="Payment Method">
             <CheckoutWizard activeStep={2}/>
             <form className="mx-auto max-w-screen-md" onSubmit={submitHandler}>
-                <h1 className="mb-4 text-4xl text-center">Choose a Payment Method</h1>
+                <h1 className="mb-4 text-4xl text-center text-primary">Choose a Payment Method</h1>
                 {
                     ['Pay with Mono', 'Cash On Delivery'].map((payment)=> (
                         <div key={payment} className="mb-4">
@@ -55,3 +55,5 @@ export default function PaymentScreen() {
         </Layout>
     )
 }
+
+PaymentScreen.auth = true;

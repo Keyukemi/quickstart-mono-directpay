@@ -50,6 +50,9 @@ function reducer(state, action){
                 }
             }
         }
+        case 'CLEAR_CART_ITEMS':
+            return{...state, cart:{...state.cart, cartItems:[]}}
+
         case 'SAVE_SHIPPING_ADDRESS':
             return{
                 ...state,
@@ -60,7 +63,7 @@ function reducer(state, action){
                         ...action.payload,
                     }
                 }
-        }
+            }
         case 'SAVE_PAYMENT_METHOD':
             return{
                 ...state,
@@ -68,7 +71,8 @@ function reducer(state, action){
                     ...state.cart,
                     paymentMethod: action.payload,
                 }
-        };
+            }
+        
         default:
             return state;
     }
