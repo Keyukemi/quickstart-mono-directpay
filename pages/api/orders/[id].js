@@ -3,7 +3,6 @@ import Order from "@/models/Order";
 import { getToken } from 'next-auth/jwt';
 
 
-
 const handler = async (req, res) => {
   const user = await getToken({ req });
   if (!user) {
@@ -11,12 +10,10 @@ const handler = async (req, res) => {
   }
 
   await db.connect();
-  const newOrder = new Order({
-    ...req.body,
-    user: user._id,
-  });
+  const order = await Order.findById(req.query.id);
+  await db.disconnect();
 
-  const order = await newOrder.save();
-  res.status(201).send(order);
+  res.send(order)
+
 };
 export default handler;

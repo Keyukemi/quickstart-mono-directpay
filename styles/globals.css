@@ -23,19 +23,27 @@ a{
 }
 
 .primary-button{
-    @apply bg-tertiary hover:bg-secondary active:bg-highlight text-black font-semibold px-4 py-2 rounded-full mt-2
+    @apply bg-tertiary hover:bg-secondary active:bg-highlight text-black font-semibold px-4 py-2 rounded-full mt-2;
 }
 .secondary-button{
-    @apply bg-headline hover:bg-primary active:bg-paragraph text-black font-semibold px-4 py-2 rounded-full mt-2
+    @apply bg-headline hover:bg-primary active:bg-paragraph text-black font-semibold px-4 py-2 rounded-full mt-2;
 } 
 
 
 input,
 select,
 textarea{
-    @apply rounded border p-2 outline-none ring-tertiary focus:ring-secondary
+    @apply rounded border p-2 outline-none ring-tertiary focus:ring-secondary;
 }
 
 .dropdown-link{
     @apply flex p-2 hover:bg-tertiary
+}
+
+.alert-error{
+    @apply my-3 rounded-lg bg-red-100 text-red-700;
+}
+
+.alert-success{
+    @apply my-3 rounded-lg bg-green-100 text-green-700;
 }
