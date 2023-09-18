@@ -13,7 +13,7 @@ import Cookies from "js-cookie";
 
 function ConfirmOrderScreen() {
     const router = useRouter();
-    const { state, dispatch } = useContext(Store);
+    const {state, dispatch} = useContext(Store);
     const {cart} = state;
     const{cartItems, shippingAddress, paymentMethod}= cart;
     const round2 = (num) => Math.round(num * 100 + Number.EPSILON)/100;

@@ -26,7 +26,7 @@ function OrderScreen(){
     const [{loading, error, order}, dispatch] = useReducer(reducer,{
         loading: true,
         order:{},
-        error: '',
+        error: null,
     })
 
     useEffect(()=>{
@@ -39,47 +39,50 @@ function OrderScreen(){
                 dispatch({type: 'FETCH_FAIL', payload: getError(err) });
             }
         }
-        if(!order._id || order._id && order._id !== orderId ){
+        if (orderId && (!order._id || (order._id && order._id !== orderId))) {
             fetchOrder();
         }
     },[order, orderId])
 
-    const {shippingAddress, paymentMethod, orderItems, itemsPrice, taxPrice,
-         shippingPrice, totalPrice, isPaid, paidAt, isDelivered, deliveredAt} = order;
+    const {shippingAddress = {}, paymentMethod, orderItems = [], itemsPrice, taxPrice,
+         shippingPrice, totalPrice, isPaid, paidAt, isDelivered, deliveredAt} = order || {};
 
 
     return(
         <Layout title={`Order${orderId}`}>
             <h1 className="mb-4 text-4xl text-center text-primary">{`Order ${orderId}`}</h1>
-            {loading ? (<div>Loading</div>): 
-            error ? (<div className="alert-error">{error}</div>):
+            {loading ? (<div>Loading</div>): error ? (<div className="alert-error">{error}</div>):
             (<div className="grid md:grid-cols-4 md:gap-5">
                 <div className="overflow-x-auto md:col-span-3">
                     <div className="card p-5">
                         <h2 className=" mb-2 text-lg text-highlight font-bold">Shipping Address</h2>
                         <div className="mb-4">
-                            <p>{shippingAddress.fullName}</p>
-                            <p>{shippingAddress.phoneNumber}</p>
-                            <p>{shippingAddress.address}</p>
-                            <p>{shippingAddress.city}</p>
-                            <p>{shippingAddress.country}</p>
+                            <p>{shippingAddress?.fullName}</p>
+                            <p>{shippingAddress?.phoneNumber}</p>
+                            <p>{shippingAddress?.address}</p>
+                            <p>{shippingAddress?.city}</p>
+                            <p>{shippingAddress?.country}</p>
                         </div>
-                        {isDelivered ? (
-                            <div className="alert-success">Delivered at {deliveredAt}</div>
-                        ): (
-                            <div className="alert-error">Not delivered</div>
-                        )}
+                        <div className="flex">
+                            {isDelivered ? (
+                                <div className="alert-success">Delivered at {deliveredAt}</div>
+                            ): (
+                                <div className="alert-error">Not delivered</div>
+                            )}
+                        </div>
                     </div>
 
-                    <div className="card p-5">
+                    <div className="card p-5 ">
                         <h2 className=" mb-2 text-lg text-highlight font-bold">Payment Method</h2>
                         <div> {paymentMethod} </div>
-                        { isPaid ? (
-                                <div className="alert-success">Paid at {paidAt}</div>
-                            ):(
-                                <div className="alert-error">Not Paid</div>
-                            )
-                        }
+                        <div className="flex">
+                            { isPaid ? (
+                                    <div className="alert-success">Paid at {paidAt}</div>
+                                ):(
+                                    <div className="alert-error">Not Paid</div>
+                                )
+                            }
+                        </div>
                     </div>
 
                     <div className="card p-5 overflow-x-auto">
@@ -157,7 +160,7 @@ function OrderScreen(){
                                     className={`w-full ${loading ? "secondary-button cursor-not-allowed": "primary-button"}`} 
                                     onClick={()=>{}}
                                     disabled={loading}>
-                                    {loading ? 'loading': 'Pay with Mono'}
+                                    {loading ? 'loading': `${paymentMethod}`}
                                 </button>
                             </li>
                         </ul>

@@ -6,6 +6,7 @@ import {useForm} from 'react-hook-form';
 import { getError } from "@/utils/error";
 import {toast} from 'react-toastify';
 import { useRouter } from "next/router";
+import axios from "axios";
 
 
 export default function LoginScreen() {
@@ -25,8 +26,11 @@ export default function LoginScreen() {
         formState: {errors},
     } = useForm();
 
-    const submitHandler = async ({email, password}) =>{
+    const submitHandler = async ({name, email, password}) =>{
         try {
+            await axios.post('/api/auth/signup',{
+                name, email, password
+            })
             const result = await signIn('credentials',{
                 redirect: false,
                 email,
@@ -40,9 +44,23 @@ export default function LoginScreen() {
         }
     }
     return( 
-        <Layout title="Login">
+        <Layout title="Register">
             <form action="" className="mx-auto max-w-screen-md" onSubmit={handleSubmit(submitHandler)}>
-                <h1 className="mb-4 text-xl text-center text-primary">Login</h1>
+                <h1 className="mb-4 text-xl text-center text-primary">Create an Account </h1>
+
+                <div className="mb-4">
+                        <label htmlFor="name">Username</label>
+                        <input type="text"
+                        {...register('name', {required:'Please enter name'})} className="w-full" id="name" autoFocus />
+                        {
+                            errors.name && (
+                                <div className="text-red-500">
+                                    {errors.email.name}
+                                </div>
+                            )
+                        }
+                    </div>
+
                     <div className="mb-4">
                         <label htmlFor="email">Email</label>
                         <input type="email"
@@ -61,6 +79,7 @@ export default function LoginScreen() {
                             )
                         }
                     </div>
+
                     <div className="mb-4">
                         <label htmlFor="password">Password</label>
                         <input type="password" 
@@ -79,11 +98,11 @@ export default function LoginScreen() {
                         
                     </div>
                     <div className="mb-4">
-                        <button className="primary-button">Login</button>
+                        <button className="primary-button">Register</button>
                     </div>
                     <div className="mb-4">
-                        Don&apos;t have an account? <span className="font-bold text-highlight">
-                            <Link href={`/register?redirect=${redirect || '/'}`}>Register here</Link>
+                        Already have an account? <span className="font-bold text-highlight">
+                            <Link href={`/login?redirect=${redirect || '/'}`} >Login here</Link>
                         </span>
                     </div>
 
