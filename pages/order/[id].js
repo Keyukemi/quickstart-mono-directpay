@@ -1,7 +1,6 @@
 import Layout from "@/components/Layout";
 import { getError } from "@/utils/error";
 import axios from "axios";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useEffect, useReducer } from "react";
 import Link from "next/link";
@@ -15,39 +14,97 @@ function reducer(state, action){
             return {...state, loading: false, order:action.payload, error:''};
         case 'FETCH_FAIL':
             return {...state, loading: false, error:action.payload};
-        default: state
+        case 'PAY_REQUEST':
+            return{...state, payLoading: true};
+        case 'PAY_SUCCESS':
+            return{...state, payLoading: false, paySuccessful: true};
+        case 'PAY_FAIL':
+            return{...state, payLoading: false, payError: action.payload};
+        case 'PAY_RESET':
+            return{...state, payLoading: false, paySuccessful: false, payError: ''};
+            
+        default: return state
     }
 }
 
 
 function OrderScreen(){
-    const {query} = useRouter();
+    const router = useRouter();
+    const {query} = router;
     const orderId = query.id;
-    const [{loading, error, order}, dispatch] = useReducer(reducer,{
+    const [{loading, error, order, payLoading}, dispatch] = useReducer(reducer,{
         loading: true,
         order:{},
         error: null,
+        payLoading: false,  
+        paySuccessful: false,
+        payError: '', 
     })
 
-    useEffect(()=>{
-        const fetchOrder = async() => {
-            try {
-                dispatch({type: 'FETCH_REQUEST' });
-                const {data} = await axios.get(`/api/orders/${orderId}`)
-                dispatch({type: 'FETCH_SUCCESS', payload: data });
-            } catch (err) {
-                dispatch({type: 'FETCH_FAIL', payload: getError(err) });
-            }
+    const {shippingAddress = {}, paymentMethod, orderItems = [], itemsPrice, taxPrice,
+    shippingPrice, totalPrice, isPaid, paidAt, isDelivered, deliveredAt} = order || {};
+  
+
+    useEffect(() => {
+        const fetchOrder = async () => {
+          try {
+            dispatch({ type: 'FETCH_REQUEST' });
+            const { data } = await axios.get(`/api/orders/${orderId}`)
+            dispatch({ type: 'FETCH_SUCCESS', payload: data });
+          } catch (err) {
+            dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
+          }
         }
         if (orderId && (!order._id || (order._id && order._id !== orderId))) {
-            fetchOrder();
+          fetchOrder();
         }
-    },[order, orderId])
+      }, [order, orderId])
+      
+      useEffect(() => {
+        if(!paymentMethod) return;
+      
+        const interval = setInterval(async () => {
+          try {
+            const { data } = await axios.post(`/api/verifypayment`, {
+                orderId: order._id,
+              });
+            if (data.isPaid !== isPaid) {
+              dispatch({ type: 'FETCH_SUCCESS', payload: { ...order, isPaid: data.isPaid, paidAt: data.paidAt } });
+            }
+          } catch (error) {
+            console.error('Error fetching payment status:', error);
+          }
+        }, 60000); 
 
-    const {shippingAddress = {}, paymentMethod, orderItems = [], itemsPrice, taxPrice,
-         shippingPrice, totalPrice, isPaid, paidAt, isDelivered, deliveredAt} = order || {};
+        return () => clearInterval(interval);
+    }, [isPaid, order, orderId, paymentMethod]);
+
+  
 
 
+
+    const handleMonoPayment = async () => {
+        try {
+            dispatch({ type: 'PAY_REQUEST' }); 
+ 
+            const { data } = await axios.get(`/api/initiatepayment?id=${orderId}`);
+            window.open(data.paymentLink, "_blank");
+            dispatch({ type: 'PAY_SUCCESS' }); 
+        } catch (error) {
+            console.error('Error initiating payment:', error);
+            dispatch({ type: 'PAY_FAIL', payload: error.message });  
+        }
+    };
+        
+        
+    const handleCashOnDelivery = () => {
+        router.push('/');
+    };
+
+    if (!paymentMethod) {
+        return <div>Loading...</div>;
+    }
+    
     return(
         <Layout title={`Order${orderId}`}>
             <h1 className="mb-4 text-4xl text-center text-primary">{`Order ${orderId}`}</h1>
@@ -121,9 +178,6 @@ function OrderScreen(){
                                 }
                             </tbody>
                         </table>
-                        <div className="flex justify-end">
-                            <Link href="/cart" className="text-center secondary-button">Edit Order</Link>
-                        </div>
                     </div>
                 </div>
 
@@ -155,14 +209,55 @@ function OrderScreen(){
                                     <div>₦{totalPrice}</div>
                                 </div>
                             </li>
+                            {/* <li>
+                                {paymentMethod === "Pay with Mono" && (
+                                    <button 
+                                    className={`w-full ${payLoading ? "secondary-button cursor-not-allowed" : "secondary-button"}`} 
+                                    onClick={handleMonoPayment}
+                                    disabled={payLoading}
+                                    >
+                                    {payLoading ? "Loading..." : "Pay with Mono"}
+                                    </button>
+                                )}
+
+                                {paymentMethod === "Cash On Delivery" && (
+                                    <button 
+                                    className="w-full secondary-button" 
+                                    onClick={handleCashOnDelivery}
+                                    >
+                                    Cash on Delivery
+                                    </button>
+                                )}
+                            </li> */}
+
                             <li>
-                                <button 
-                                    className={`w-full ${loading ? "secondary-button cursor-not-allowed": "primary-button"}`} 
-                                    onClick={()=>{}}
-                                    disabled={loading}>
-                                    {loading ? 'loading': `${paymentMethod}`}
-                                </button>
+                                {isPaid ? (
+                                    <div className="w-full text-headline bg-primary px-4 py-2 rounded-full mt-2 text-center ">
+                                        Payment Completed
+                                    </div>
+                                ) : (
+                                    <>
+                                        {paymentMethod === "Pay with Mono" && (
+                                            <button 
+                                                className={`w-full ${payLoading ? "secondary-button cursor-not-allowed" : "secondary-button"}`} 
+                                                onClick={handleMonoPayment}
+                                                disabled={payLoading}
+                                            >
+                                                {payLoading ? "Loading..." : "Pay with Mono"}
+                                            </button>
+                                        )}
+                                        {paymentMethod === "Cash On Delivery" && (
+                                            <button 
+                                                className="w-full secondary-button" 
+                                                onClick={handleCashOnDelivery}
+                                            >
+                                                Cash on Delivery
+                                            </button>
+                                        )}
+                                    </>
+                                )}
                             </li>
+
                         </ul>
                     </div>
                 </div>
@@ -172,4 +267,6 @@ function OrderScreen(){
     )
 }
 OrderScreen.auth = true;
-export default dynamic (() => Promise.resolve(OrderScreen), {ssr: false});
+export default OrderScreen;
+
+//dynamic (() => Promise.resolve(OrderScreen), {ssr: false});

@@ -20,7 +20,7 @@ function ConfirmOrderScreen() {
 
     const itemsPrice = round2(cartItems.reduce((a,c) => a + c.quantity * c.price, 0));
     const taxPrice = round2(itemsPrice * 0.05);
-    const shippingPrice = itemsPrice > 250 ? 0 : 15;
+    const shippingPrice = itemsPrice < 250 ? 0 : 15;
     const totalPrice = round2(itemsPrice + taxPrice + shippingPrice);
 
     useEffect(()=>{
@@ -33,7 +33,6 @@ function ConfirmOrderScreen() {
 
     const placeOrderHandler = async() => {
         try{
-            console.log('abc')
             setLoading(true);
             const {data} = await axios.post('/api/orders',{
                 orderItems: cartItems,
@@ -50,7 +49,6 @@ function ConfirmOrderScreen() {
                 'cart',
                 JSON.stringify({...cart, cartItems:[]})
             );
-            console.log('123')
             router.push(`/order/${data._id}`);
         } catch (err) {
             console.log(err)

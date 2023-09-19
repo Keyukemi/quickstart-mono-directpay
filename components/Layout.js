@@ -56,10 +56,10 @@ export default function Layout({title, children}) {
                   </Menu.Button>
                   <Menu.Items className="absolute origin-top-right right-0 w-56 bg-white shadow-lg rounded-md border">
                     <Menu.Item>
-                      <DropdownLink className="dropdown-link" href="/profile">Profile</DropdownLink>
+                      <DropdownLink className="dropdown-link" href="/">Profile</DropdownLink>
                     </Menu.Item>
                     <Menu.Item>
-                      <DropdownLink className="dropdown-link" href="/order-history">Order History</DropdownLink>
+                      <DropdownLink className="dropdown-link" href="/">Order History</DropdownLink>
                     </Menu.Item>
                     <hr/>
                     <Menu.Item>

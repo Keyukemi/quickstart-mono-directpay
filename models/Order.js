@@ -28,9 +28,7 @@ const orderSchema = new mongoose.Schema(
         isDelivered:{type: Boolean, required:true, default: false},
         paidAt:{type: Date},
         deliveredAt:{type: Date},
-        
-        
-        
+        paymentReference: {type: String, required:false, unique: true},
     },{
         timestamps: true,
     }
