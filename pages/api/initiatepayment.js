@@ -40,7 +40,6 @@ const handler = async (req, res) => {
 
     order.paymentReference = reference;
     await order.save();
-    await db.disconnect();
     
     res.status(200).send({ paymentLink: response.data.payment_link });
     
