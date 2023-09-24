@@ -62,33 +62,34 @@ function OrderScreen(){
       
       useEffect(() => {
         if(!paymentMethod) return;
-            // const { status, reference, reason } = router.query;
-            // if (status === "successful") {
-            //   // Handle successful payment, maybe fetch the updated order
-            // } else if (status === "failed") {
-            //   // Handle failed payment, display the reason to the user
-            //   console.error("Payment failed:", reason);
-            // }
         
-        // const interval = setInterval(async () => {
-        //   try {
-        //     const { data } = await axios.post(`/api/verifypayment`, {
-        //         orderId: order._id,
-        //       });
-        //     if (data.isPaid !== isPaid) {
-        //       dispatch({ type: 'FETCH_SUCCESS', payload: { ...order, isPaid: data.isPaid, paidAt: data.paidAt } });
-        //     }
-        //   } catch (error) {
-        //     console.error('Error fetching payment status:', error);
-        //   }
-        // }, 60000); 
+        let intervalId;
 
-        // return () => clearInterval(interval);
-    }, [isPaid, order, orderId, paymentMethod, router.query]);
+        const fetchOrder = async () => {
+          try {
+            dispatch({ type: 'FETCH_REQUEST' });
+            const { data } = await axios.get(`/api/orders/${orderId}`);
+            dispatch({ type: 'FETCH_SUCCESS', payload: data });
+          } catch (err) {
+            dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
+          }
+        };
+      
+        if (payLoading) {
+          intervalId = setInterval(() => {
+            fetchOrder();
+            console.log("Fetched")
+          }, 5000);
+        }
+      
+        return () => {
+          clearInterval(intervalId);
+          console.log("done")
+        };
+        
+    }, [isPaid, order, orderId, payLoading, paymentMethod]);
 
   
-
-
 
     const handleMonoPayment = async () => {
         try {
