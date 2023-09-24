@@ -62,22 +62,29 @@ function OrderScreen(){
       
       useEffect(() => {
         if(!paymentMethod) return;
-      
-        const interval = setInterval(async () => {
-          try {
-            const { data } = await axios.post(`/api/verifypayment`, {
-                orderId: order._id,
-              });
-            if (data.isPaid !== isPaid) {
-              dispatch({ type: 'FETCH_SUCCESS', payload: { ...order, isPaid: data.isPaid, paidAt: data.paidAt } });
-            }
-          } catch (error) {
-            console.error('Error fetching payment status:', error);
-          }
-        }, 60000); 
+            // const { status, reference, reason } = router.query;
+            // if (status === "successful") {
+            //   // Handle successful payment, maybe fetch the updated order
+            // } else if (status === "failed") {
+            //   // Handle failed payment, display the reason to the user
+            //   console.error("Payment failed:", reason);
+            // }
+        
+        // const interval = setInterval(async () => {
+        //   try {
+        //     const { data } = await axios.post(`/api/verifypayment`, {
+        //         orderId: order._id,
+        //       });
+        //     if (data.isPaid !== isPaid) {
+        //       dispatch({ type: 'FETCH_SUCCESS', payload: { ...order, isPaid: data.isPaid, paidAt: data.paidAt } });
+        //     }
+        //   } catch (error) {
+        //     console.error('Error fetching payment status:', error);
+        //   }
+        // }, 60000); 
 
-        return () => clearInterval(interval);
-    }, [isPaid, order, orderId, paymentMethod]);
+        // return () => clearInterval(interval);
+    }, [isPaid, order, orderId, paymentMethod, router.query]);
 
   
 
@@ -268,5 +275,3 @@ function OrderScreen(){
 }
 OrderScreen.auth = true;
 export default OrderScreen;
-
-//dynamic (() => Promise.resolve(OrderScreen), {ssr: false});

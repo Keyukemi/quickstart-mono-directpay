@@ -31,7 +31,7 @@ export default function Layout({title, children}) {
     <>
         <Head>
             <title>{title ? title: "Mono DirectPay Quickstart App"}</title>
-            <meta name='description' content='Created to showcase how to us the Mono DirectPay API'/>
+            <meta name='description' content='Created to showcase how to use the Mono DirectPay API'/>
             <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
         </Head>
 
@@ -90,7 +90,7 @@ export default function Layout({title, children}) {
         </main>
 
         <footer className='flex justify-center items-center h-10 shadow-inner'>
-          <p>Copyright ©️ 2023 Keyukemi Ubi for Mono Technologies LTD</p>
+          <p>For Mono Technologies LTD</p>
         </footer>
         </div>
     </>

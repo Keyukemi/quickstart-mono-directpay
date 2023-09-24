@@ -41,6 +41,7 @@ const handler = async (req, res) => {
     order.isPaid = status === 'successful';
     order.paidAt = payDate;
     await order.save();
+    await db.disconnect();
 
     res.status(200).send({ isPaid: order.isPaid });
 
