@@ -14,7 +14,10 @@ const handler = async (req, res) => {
   await db.connect();
 
   try {
-    const { orderId } = req.body;
+    const {orderId}  = req.body;
+
+    console.log({orderId})
+    
     const order = await Order.findById(orderId);
     if (!order) {
       return res.status(404).send('Order not found');
@@ -36,14 +39,20 @@ const handler = async (req, res) => {
     
     if (status !== 'successful') {
         order.paymentReference = null;
-      }
+    }
 
-    order.isPaid = status === 'successful';
+    if(status === 'successful'){
+      order.paymentStatus = 'successful'
+    }else if(status === 'failed'){
+      order.paymentStatus = 'failed'
+    }
+
+
     order.paidAt = payDate;
     await order.save();
     await db.disconnect();
 
-    res.status(200).send({ isPaid: order.isPaid });
+    res.status(200).send({ paymentStatus: order.paymentStatus, orderId: order._id.toString()});
 
   } catch (error) {
     

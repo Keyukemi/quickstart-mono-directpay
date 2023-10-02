@@ -22,13 +22,15 @@ const handler = async (req, res) => {
     const amount = order.totalPrice * 100;
     const description = `Payment for order ${order._id}`;
     const reference = `ref-${order._id}-mono-${Date.now()}`;
+    const redirect_url = `${process.env.NEXT_PUBLIC_APP_URL}/order/payment-check?orderId=${orderId}`;
+
 
     const response = await axios.post('https://api.withmono.com/v1/payments/initiate', {
       amount,
       description,
       reference,
       type: 'onetime-debit',
-      redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/order/${orderId}`,
+      redirect_url,
     }, {
       headers: {
         'mono-sec-key': process.env.MONO_SECRET_KEY

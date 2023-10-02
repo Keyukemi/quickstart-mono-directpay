@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  app:
+    image: quickstart-directpay
+    ports:
+      - 3000:3000
+    build: .
+    volumes:
+      - ./pages:/app/pages
+      - ./public:/app/public
+      - ./styles:/app/styles
+      - ./components:/app/components
+      - ./models:/app/models
+      - ./utils:/app/utils

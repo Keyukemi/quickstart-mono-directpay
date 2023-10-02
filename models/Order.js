@@ -1,5 +1,12 @@
 import mongoose from 'mongoose';
 
+const PAYMENT_STATUSES = {
+    SUCCESSFUL: 'successful',
+    FAILED: 'failed',
+    PROCESSING: 'processing',
+    PENDING: 'pending'
+};
+
 const orderSchema = new mongoose.Schema(
     {
         user: {type: mongoose.Schema.Types.ObjectId, ref:'User', required: true},
@@ -24,11 +31,13 @@ const orderSchema = new mongoose.Schema(
         shippingPrice:{type: Number, required:true},
         taxPrice:{type: Number, required:true},
         totalPrice:{type: Number, required:true},
-        isPaid:{type: Boolean, required:true, default:false},
+        // isPaid:{type: Boolean, required:true, default:false},
         isDelivered:{type: Boolean, required:true, default: false},
         paidAt:{type: Date},
         deliveredAt:{type: Date},
         paymentReference: {type: String, required:false, unique: true},
+        paymentStatus:{type: String, required: true, enum: Object.values(PAYMENT_STATUSES),
+            default: PAYMENT_STATUSES.PENDING}
     },{
         timestamps: true,
     }

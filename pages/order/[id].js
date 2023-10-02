@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import { getError } from "@/utils/error";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -32,6 +32,8 @@ function OrderScreen(){
     const router = useRouter();
     const {query} = router;
     const orderId = query.id;
+    const [isVerifyingPayment, setIsVerifyingPayment] = useState(false);
+
     const [{loading, error, order, payLoading}, dispatch] = useReducer(reducer,{
         loading: true,
         order:{},
@@ -42,7 +44,7 @@ function OrderScreen(){
     })
 
     const {shippingAddress = {}, paymentMethod, orderItems = [], itemsPrice, taxPrice,
-    shippingPrice, totalPrice, isPaid, paidAt, isDelivered, deliveredAt} = order || {};
+    shippingPrice, totalPrice, paymentStatus, paidAt, isDelivered, deliveredAt} = order || {};
   
 
     useEffect(() => {
@@ -58,49 +60,22 @@ function OrderScreen(){
         if (orderId && (!order._id || (order._id && order._id !== orderId))) {
           fetchOrder();
         }
-      }, [order, orderId])
+      }, [order, orderId, router.asPath])
       
-      useEffect(() => {
-        if(!paymentMethod) return;
-        
-        let intervalId;
-
-        const fetchOrder = async () => {
-          try {
-            dispatch({ type: 'FETCH_REQUEST' });
-            const { data } = await axios.get(`/api/orders/${orderId}`);
-            dispatch({ type: 'FETCH_SUCCESS', payload: data });
-          } catch (err) {
-            dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
-          }
-        };
-      
-        if (payLoading) {
-          intervalId = setInterval(() => {
-            fetchOrder();
-            console.log("Fetched")
-          }, 5000);
-        }
-      
-        return () => {
-          clearInterval(intervalId);
-          console.log("done")
-        };
-        
-    }, [isPaid, order, orderId, payLoading, paymentMethod]);
-
   
 
     const handleMonoPayment = async () => {
+        setIsVerifyingPayment(true)
         try {
             dispatch({ type: 'PAY_REQUEST' }); 
- 
             const { data } = await axios.get(`/api/initiatepayment?id=${orderId}`);
             window.open(data.paymentLink, "_blank");
             dispatch({ type: 'PAY_SUCCESS' }); 
         } catch (error) {
             console.error('Error initiating payment:', error);
             dispatch({ type: 'PAY_FAIL', payload: error.message });  
+        } finally {
+            setIsVerifyingPayment(false); 
         }
     };
         
@@ -115,6 +90,7 @@ function OrderScreen(){
     
     return(
         <Layout title={`Order${orderId}`}>
+            {isVerifyingPayment && <div>Verifying your payment...</div>}
             <h1 className="mb-4 text-4xl text-center text-primary">{`Order ${orderId}`}</h1>
             {loading ? (<div>Loading</div>): error ? (<div className="alert-error">{error}</div>):
             (<div className="grid md:grid-cols-4 md:gap-5">
@@ -141,7 +117,7 @@ function OrderScreen(){
                         <h2 className=" mb-2 text-lg text-highlight font-bold">Payment Method</h2>
                         <div> {paymentMethod} </div>
                         <div className="flex">
-                            { isPaid ? (
+                            { paymentStatus === 'successful' ? (
                                     <div className="alert-success">Paid at {paidAt}</div>
                                 ):(
                                     <div className="alert-error">Not Paid</div>
@@ -217,29 +193,9 @@ function OrderScreen(){
                                     <div>₦{totalPrice}</div>
                                 </div>
                             </li>
-                            {/* <li>
-                                {paymentMethod === "Pay with Mono" && (
-                                    <button 
-                                    className={`w-full ${payLoading ? "secondary-button cursor-not-allowed" : "secondary-button"}`} 
-                                    onClick={handleMonoPayment}
-                                    disabled={payLoading}
-                                    >
-                                    {payLoading ? "Loading..." : "Pay with Mono"}
-                                    </button>
-                                )}
-
-                                {paymentMethod === "Cash On Delivery" && (
-                                    <button 
-                                    className="w-full secondary-button" 
-                                    onClick={handleCashOnDelivery}
-                                    >
-                                    Cash on Delivery
-                                    </button>
-                                )}
-                            </li> */}
 
                             <li>
-                                {isPaid ? (
+                                {paymentStatus === 'successful' ? (
                                     <div className="w-full text-headline bg-primary px-4 py-2 rounded-full mt-2 text-center ">
                                         Payment Completed
                                     </div>
